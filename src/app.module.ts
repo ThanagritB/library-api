@@ -23,7 +23,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
         database: process.env.DB_NAME,
         entities: [__dirname + '/**/*.entity.{ts,js}'],
         synchronize: process.env.APP_ENV === 'dev', // It will create/update data schema automatically. (Use only dev!)
-        logging: true,
+        logging: process.env.APP_ENV === 'dev', // Print query statement to terminal.
       }),
     }),
 

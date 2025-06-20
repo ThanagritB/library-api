@@ -1,4 +1,5 @@
-import { IsInt, IsString, Max, Min } from 'class-validator';
+import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
+import { BookCategory } from '../enums/book-category.enum';
 
 export class CreateBookDto {
   @IsString()
@@ -11,4 +12,8 @@ export class CreateBookDto {
   @Min(1000)
   @Max(2100)
   publishedYear: number;
+
+  @IsEnum(BookCategory)
+  @IsOptional()
+  category?: BookCategory;
 }

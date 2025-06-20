@@ -1,4 +1,5 @@
 import { Expose } from 'class-transformer';
+import { BookCategory } from '../enums/book-category.enum';
 
 export class BookResponseDto {
   @Expose()
@@ -15,4 +16,7 @@ export class BookResponseDto {
 
   @Expose()
   editionCount: number;
+
+  @Expose()
+  category: BookCategory;
 }

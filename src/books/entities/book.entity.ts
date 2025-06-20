@@ -8,6 +8,7 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 import { BookEdition } from './book-edition.entity';
+import { BookCategory } from '../enums/book-category.enum';
 
 @Entity()
 export class Book {
@@ -22,6 +23,9 @@ export class Book {
 
   @Column({ name: 'published_year', type: 'int' })
   publishedYear: number;
+
+  @Column({ type: 'enum', enum: BookCategory, default: BookCategory.OTHER })
+  category: BookCategory;
 
   @OneToMany(() => BookEdition, (edition) => edition.book, { cascade: true }) // cascade: true mean if book has book edition it will save edition automatically.
   editions: BookEdition[];

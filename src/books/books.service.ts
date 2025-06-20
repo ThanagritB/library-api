@@ -14,9 +14,13 @@ export class BooksService {
     private bookRepository: Repository<Book>,
   ) {}
 
-  create(dto: CreateBookDto): Promise<Book> {
+  async create(dto: CreateBookDto): Promise<BookResponseDto> {
     const book = this.bookRepository.create(dto);
-    return this.bookRepository.save(book);
+    await this.bookRepository.save(book);
+
+    return plainToInstance(BookResponseDto, book, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async findAll(): Promise<BookResponseDto[]> {
@@ -27,7 +31,7 @@ export class BooksService {
     });
   }
 
-  async findOne(id: string): Promise<Book> {
+  async findOne(id: string): Promise<BookResponseDto> {
     const book = await this.bookRepository.findOne({
       where: { id },
       relations: ['editions'],
@@ -35,14 +39,19 @@ export class BooksService {
 
     if (!book) throw new NotFoundException('Book not found');
 
-    return book;
+    return plainToInstance(BookResponseDto, book, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async update(id: string, dto: UpdateBookDto): Promise<Book> {
+  async update(id: string, dto: UpdateBookDto): Promise<BookResponseDto> {
     const book = await this.findOne(id);
     Object.assign(book, dto);
+    await this.bookRepository.save(book);
 
-    return this.bookRepository.save(book);
+    return plainToInstance(BookResponseDto, book, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async remove(id: string): Promise<void> {
