@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { BooksModule } from './books/books.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { UsersModule } from './users/users.module';
+import { typeOrmConfigForRoot } from './config/typeorm.config';
 
 @Module({
   imports: [
@@ -12,22 +14,14 @@ import { TypeOrmModule } from '@nestjs/typeorm';
       isGlobal: true,
     }),
 
-    // Connect database with data in .env.
+    // Connect database with TypeORM.
     TypeOrmModule.forRootAsync({
-      useFactory: () => ({
-        type: 'postgres',
-        host: process.env.DB_HOST,
-        port: parseInt(process.env.DB_PORT || '5432', 10),
-        username: process.env.DB_USERNAME,
-        password: process.env.DB_PASSWORD,
-        database: process.env.DB_NAME,
-        entities: [__dirname + '/**/*.entity.{ts,js}'],
-        synchronize: process.env.APP_ENV === 'dev', // It will create/update data schema automatically. (Use only dev!)
-        logging: process.env.APP_ENV === 'dev', // Print query statement to terminal.
-      }),
+      useFactory: typeOrmConfigForRoot,
     }),
 
     BooksModule,
+
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
