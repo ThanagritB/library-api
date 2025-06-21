@@ -14,8 +14,8 @@ export class BookFormat {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'format_type' })
-  formatType: string;
+  @Column()
+  name: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   price: number;

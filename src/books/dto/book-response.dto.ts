@@ -1,5 +1,6 @@
-import { Expose } from 'class-transformer';
+import { Expose, Type } from 'class-transformer';
 import { BookCategory } from '../enums/book-category.enum';
+import { BookEditionResponseDto } from './book-edition-response.dto';
 
 export class BookResponseDto {
   @Expose()
@@ -19,4 +20,8 @@ export class BookResponseDto {
 
   @Expose()
   category: BookCategory;
+
+  @Expose()
+  @Type(() => BookEditionResponseDto)
+  editions?: BookEditionResponseDto[];
 }

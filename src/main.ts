@@ -6,6 +6,7 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(
     new ValidationPipe({
+      whitelist: true, // Remove field not contain in DTO.
       forbidNonWhitelisted: true, // If has some field that not contain in DTO, it will error 400 Bad request.
       transform: true, // Convert type.
     }),

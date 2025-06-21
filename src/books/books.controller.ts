@@ -7,28 +7,44 @@ import {
   Param,
   Delete,
   ParseUUIDPipe,
+  HttpCode,
+  HttpStatus,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
+import { plainToInstance } from 'class-transformer';
+import { BookResponseDto } from './dto/book-response.dto';
 
 @Controller('books')
 export class BooksController {
   constructor(private readonly booksService: BooksService) {}
 
   @Post()
-  create(@Body() createBookDto: CreateBookDto) {
-    return this.booksService.create(createBookDto);
+  async create(@Body() createBookDto: CreateBookDto) {
+    const book = await this.booksService.create(createBookDto);
+
+    return plainToInstance(BookResponseDto, book, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get()
-  findAll() {
-    return this.booksService.findAll();
+  async findAll() {
+    const books = await this.booksService.findAll();
+
+    return plainToInstance(BookResponseDto, books, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Get(':id')
-  findOne(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.booksService.findOne(id);
+  async findOne(@Param('id', new ParseUUIDPipe()) id: string) {
+    const book = await this.booksService.findOne(id);
+
+    return plainToInstance(BookResponseDto, book, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Put(':id')
@@ -36,11 +52,16 @@ export class BooksController {
     @Param('id', new ParseUUIDPipe()) id: string,
     @Body() updateBookDto: UpdateBookDto,
   ) {
-    return this.booksService.update(id, updateBookDto);
+    const book = this.booksService.update(id, updateBookDto);
+
+    return plainToInstance(BookResponseDto, book, {
+      excludeExtraneousValues: true,
+    });
   }
 
   @Delete(':id')
-  remove(@Param('id', new ParseUUIDPipe()) id: string) {
-    return this.booksService.remove(id);
+  @HttpCode(HttpStatus.NO_CONTENT)
+  async remove(@Param('id', new ParseUUIDPipe()) id: string): Promise<void> {
+    await this.booksService.remove(id);
   }
 }

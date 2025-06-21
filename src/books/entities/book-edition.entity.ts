@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -16,8 +17,12 @@ export class BookEdition {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column({ name: 'edition_name' })
-  editionName: string;
+  @Column()
+  name: string;
+
+  @Index('book_editions_isbn_idx', ['isbn'], { unique: true })
+  @Column({ type: 'varchar', length: 20 })
+  isbn: string; // Stand for 'International Standard Book Number' (หมายเลขมาตรฐานสากลประจำหนังสือแต่ละเล่ม)
 
   @ManyToOne(() => Book, (book) => book.editions, { onDelete: 'CASCADE' })
   book: Book;
@@ -34,3 +39,5 @@ export class BookEdition {
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt?: Date;
 }
+
+// 978-616-18-4699-1
