@@ -1,6 +1,8 @@
 import 'dotenv/config';
 import { DataSourceOptions } from 'typeorm';
 
+const isCompiled = __dirname.includes('dist');
+
 const commonConfig: DataSourceOptions = {
   type: 'postgres',
   host: process.env.DB_HOST,
@@ -8,8 +10,8 @@ const commonConfig: DataSourceOptions = {
   username: process.env.DB_USERNAME,
   password: process.env.DB_PASSWORD,
   database: process.env.DB_NAME,
-  entities: ['src/**/entities/*.entity.{ts,js}'],
-  migrations: ['src/migrations/*.ts'],
+  entities: [isCompiled ? 'dist/**/*.entity.js' : 'src/**/*.entity.ts'],
+  migrations: [isCompiled ? 'dist/migrations/*.js' : 'src/migrations/*.ts'],
   logging: process.env.APP_ENV === 'dev', // Print query statement to terminal.
 };
 

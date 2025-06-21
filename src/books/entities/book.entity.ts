@@ -1,17 +1,19 @@
 import {
   Column,
-  CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  JoinColumn,
+  ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { BookEdition } from './book-edition.entity';
 import { BookCategory } from '../enums/book-category.enum';
+import { User } from 'src/users/entities/user.entity';
+import { BaseEntity } from 'src/common/entities/base.entity';
 
 @Entity()
-export class Book {
+export class Book extends BaseEntity {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -30,12 +32,14 @@ export class Book {
   @OneToMany(() => BookEdition, (edition) => edition.book, { cascade: true }) // cascade: true mean if book has book edition it will save edition automatically.
   editions: BookEdition[];
 
-  @CreateDateColumn({ name: 'created_at' })
-  createdAt: Date;
-
-  @UpdateDateColumn({ name: 'updated_at' })
-  updatedAt: Date;
-
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt?: Date;
+
+  @ManyToOne(() => User, { nullable: false, onDelete: 'NO ACTION' })
+  @JoinColumn({ name: 'created_by' })
+  createdBy: User;
+
+  @ManyToOne(() => User, { nullable: false, onDelete: 'NO ACTION' })
+  @JoinColumn({ name: 'updated_by' })
+  updatedBy: User;
 }
