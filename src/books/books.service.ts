@@ -11,12 +11,15 @@ import { In, Repository } from 'typeorm';
 import { BookEdition } from './entities/book-edition.entity';
 import { BookResponseDto } from './dto/book-response.dto';
 import { plainToInstance } from 'class-transformer';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { PaginationResponseDto } from 'src/common/dto/pagination-response.dto';
+import { BooksRepository } from './books.repository';
 
 @Injectable()
 export class BooksService {
   constructor(
-    @InjectRepository(Book)
-    private bookRepository: Repository<Book>,
+    @InjectRepository(BooksRepository)
+    private bookRepository: BooksRepository,
     @InjectRepository(BookEdition)
     private bookEditionRepository: Repository<BookEdition>,
   ) {}
@@ -43,13 +46,17 @@ export class BooksService {
     });
   }
 
-  async findAll(): Promise<BookResponseDto[]> {
-    const books = await this.bookRepository.find({
-      relations: ['editions', 'editions.formats'],
-    });
+  async findAll(
+    query: PaginationQueryDto,
+  ): Promise<PaginationResponseDto<Book>> {
+    const [data, total] = await this.bookRepository.findWithFilters(query);
 
-    return plainToInstance(BookResponseDto, books, {
-      excludeExtraneousValues: true,
+    return new PaginationResponseDto<Book>({
+      data,
+      total,
+      page: query.page,
+      limit: query.limit,
+      lastPage: Math.ceil(total / query.limit),
     });
   }
 

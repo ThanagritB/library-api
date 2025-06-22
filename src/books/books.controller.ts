@@ -10,12 +10,16 @@ import {
   HttpCode,
   HttpStatus,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { BooksService } from './books.service';
 import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { BookResponseDto } from './dto/book-response.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
+import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { PaginationResponseDto } from 'src/common/dto/pagination-response.dto';
+import { Book } from './entities/book.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('books')
@@ -28,8 +32,10 @@ export class BooksController {
   }
 
   @Get()
-  async findAll(): Promise<BookResponseDto[]> {
-    return this.booksService.findAll();
+  async findAll(
+    @Query() query: PaginationQueryDto,
+  ): Promise<PaginationResponseDto<Book>> {
+    return this.booksService.findAll(query);
   }
 
   @Get(':id')
