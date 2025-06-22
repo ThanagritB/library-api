@@ -1,9 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  if (process.env.APP_ENV !== 'prod') {
+    app.useGlobalFilters(new HttpExceptionFilter());
+  }
+
   app.useGlobalPipes(
     new ValidationPipe({
       whitelist: true, // Remove field not contain in DTO.
@@ -11,6 +17,7 @@ async function bootstrap() {
       transform: true, // Convert type.
     }),
   );
+
   await app.listen(process.env.PORT ?? 3000);
 }
 bootstrap();
