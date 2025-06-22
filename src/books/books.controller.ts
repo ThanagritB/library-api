@@ -16,7 +16,6 @@ import { CreateBookDto } from './dto/create-book.dto';
 import { UpdateBookDto } from './dto/update-book.dto';
 import { plainToInstance } from 'class-transformer';
 import { BookResponseDto } from './dto/book-response.dto';
-import { RequestContext } from 'src/common/context/request-context';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 
 @UseGuards(JwtAuthGuard)

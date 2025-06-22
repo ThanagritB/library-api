@@ -10,6 +10,7 @@ import { AuthModule } from './auth/auth.module';
 import { ContextMiddleware } from './common/middleware/context.middleware';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ContextInterceptor } from './common/context/context.interceptor';
+import { ExternalApiModule } from './external-api/external-api.module';
 
 @Module({
   imports: [
@@ -28,6 +29,8 @@ import { ContextInterceptor } from './common/context/context.interceptor';
     UsersModule,
 
     AuthModule,
+
+    ExternalApiModule,
   ],
   controllers: [AppController],
   providers: [
