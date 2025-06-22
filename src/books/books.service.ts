@@ -9,6 +9,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Book } from './entities/book.entity';
 import { In, Repository } from 'typeorm';
 import { BookEdition } from './entities/book-edition.entity';
+import { BookResponseDto } from './dto/book-response.dto';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class BooksService {
@@ -19,7 +21,7 @@ export class BooksService {
     private bookEditionRepository: Repository<BookEdition>,
   ) {}
 
-  async create(dto: CreateBookDto): Promise<Book> {
+  async create(dto: CreateBookDto): Promise<BookResponseDto> {
     if (Array.isArray(dto.editions) && dto.editions.length > 0) {
       const allIsbn = dto.editions?.map((e) => e.isbn) || [];
 
@@ -34,17 +36,24 @@ export class BooksService {
     }
 
     const book = this.bookRepository.create(dto);
+    const saved = this.bookRepository.save(book);
 
-    return this.bookRepository.save(book);
-  }
-
-  async findAll(): Promise<Book[]> {
-    return this.bookRepository.find({
-      relations: ['editions', 'editions.formats'],
+    return plainToInstance(BookResponseDto, saved, {
+      excludeExtraneousValues: true,
     });
   }
 
-  async findOne(id: string): Promise<Book> {
+  async findAll(): Promise<BookResponseDto[]> {
+    const books = await this.bookRepository.find({
+      relations: ['editions', 'editions.formats'],
+    });
+
+    return plainToInstance(BookResponseDto, books, {
+      excludeExtraneousValues: true,
+    });
+  }
+
+  async findOne(id: string): Promise<BookResponseDto> {
     const book = await this.bookRepository.findOne({
       where: { id },
       relations: ['editions', 'editions.formats'],
@@ -52,10 +61,12 @@ export class BooksService {
 
     if (!book) throw new NotFoundException('Book not found');
 
-    return book;
+    return plainToInstance(BookResponseDto, book, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  async update(id: string, dto: UpdateBookDto): Promise<Book> {
+  async update(id: string, dto: UpdateBookDto): Promise<BookResponseDto> {
     if (Array.isArray(dto.editions) && dto.editions.length > 0) {
       const editions = dto.editions;
 
@@ -81,7 +92,11 @@ export class BooksService {
     const book = await this.findOne(id);
     Object.assign(book, dto);
 
-    return this.bookRepository.save(book);
+    const saved = this.bookRepository.save(book);
+
+    return plainToInstance(BookResponseDto, saved, {
+      excludeExtraneousValues: true,
+    });
   }
 
   async remove(id: string): Promise<void> {
