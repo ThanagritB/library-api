@@ -4,9 +4,11 @@ import { ValidationPipe } from '@nestjs/common';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { ResponseTransformInterceptor } from './common/interceptors/response-transform.interceptor';
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { join } from 'path';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   if (process.env.APP_ENV !== 'prod') {
     // Error handling
@@ -17,6 +19,11 @@ async function bootstrap() {
     new LoggingInterceptor(),
     new ResponseTransformInterceptor(),
   );
+
+  // Serve static files from "uploads" folder
+  app.useStaticAssets(join(__dirname, '..', 'uploads'), {
+    prefix: '/uploads/', // URL path prefix
+  });
 
   // Validation
   app.useGlobalPipes(

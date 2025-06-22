@@ -39,5 +39,3 @@ export class BookEdition {
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt?: Date;
 }
-
-// 978-616-18-4699-1

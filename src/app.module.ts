@@ -11,6 +11,7 @@ import { ContextMiddleware } from './common/middleware/context.middleware';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { ContextInterceptor } from './common/context/context.interceptor';
 import { ExternalApiModule } from './external-api/external-api.module';
+import { UploadModule } from './upload/upload.module';
 
 @Module({
   imports: [
@@ -31,6 +32,8 @@ import { ExternalApiModule } from './external-api/external-api.module';
     AuthModule,
 
     ExternalApiModule,
+
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [

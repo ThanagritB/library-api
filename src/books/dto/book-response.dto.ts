@@ -24,4 +24,10 @@ export class BookResponseDto {
   @Expose()
   @Type(() => BookEditionResponseDto)
   editions?: BookEditionResponseDto[];
+
+  @Expose()
+  coverFileName: string;
+
+  @Expose({ name: 'coverUrl' })
+  coverFilePath: string;
 }

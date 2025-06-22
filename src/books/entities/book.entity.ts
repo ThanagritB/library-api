@@ -32,6 +32,12 @@ export class Book extends BaseEntity {
   @OneToMany(() => BookEdition, (edition) => edition.book, { cascade: true }) // cascade: true mean if book has book edition it will save edition automatically.
   editions: BookEdition[];
 
+  @Column({ name: 'cover_filename', nullable: true })
+  coverFileName: string;
+
+  @Column({ name: 'cover_url', nullable: true })
+  coverUrl: string;
+
   @DeleteDateColumn({ name: 'deleted_at', nullable: true })
   deletedAt?: Date;
 

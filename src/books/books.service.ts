@@ -103,4 +103,21 @@ export class BooksService {
     const book = await this.findOne(id);
     await this.bookRepository.softRemove(book);
   }
+
+  async updateBookCover(
+    bookId: string,
+    originalFileName: string,
+    fileUrl: string,
+  ): Promise<Book> {
+    const book = await this.bookRepository.findOne({ where: { id: bookId } });
+
+    if (!book) {
+      throw new NotFoundException(`Book with ID ${bookId} not found`);
+    }
+
+    book.coverFileName = originalFileName;
+    book.coverUrl = fileUrl;
+
+    return this.bookRepository.save(book);
+  }
 }
