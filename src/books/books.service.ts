@@ -48,11 +48,13 @@ export class BooksService {
 
   async findAll(
     query: PaginationQueryDto,
-  ): Promise<PaginationResponseDto<Book>> {
+  ): Promise<PaginationResponseDto<BookResponseDto>> {
     const [data, total] = await this.bookRepository.findWithFilters(query);
 
-    return new PaginationResponseDto<Book>({
-      data,
+    return new PaginationResponseDto<BookResponseDto>({
+      items: plainToInstance(BookResponseDto, data, {
+        excludeExtraneousValues: true,
+      }),
       total,
       page: query.page,
       limit: query.limit,

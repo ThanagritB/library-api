@@ -19,7 +19,6 @@ import { BookResponseDto } from './dto/book-response.dto';
 import { JwtAuthGuard } from 'src/auth/guards/jwt-auth.guard';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { PaginationResponseDto } from 'src/common/dto/pagination-response.dto';
-import { Book } from './entities/book.entity';
 
 @UseGuards(JwtAuthGuard)
 @Controller('books')
@@ -34,7 +33,7 @@ export class BooksController {
   @Get()
   async findAll(
     @Query() query: PaginationQueryDto,
-  ): Promise<PaginationResponseDto<Book>> {
+  ): Promise<PaginationResponseDto<BookResponseDto>> {
     return this.booksService.findAll(query);
   }
 

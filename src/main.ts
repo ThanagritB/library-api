@@ -10,6 +10,20 @@ import { join } from 'path';
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  const originEnv = process.env.ALLOWED_ORIGINS || '';
+  const allowedOrigins = originEnv.split(',').map((origin) => origin.trim());
+
+  app.enableCors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('CORS Not Allowed'));
+      }
+    },
+    credentials: true,
+  });
+
   if (process.env.APP_ENV !== 'prod') {
     // Error handling
     app.useGlobalFilters(new HttpExceptionFilter());
@@ -34,6 +48,6 @@ async function bootstrap() {
     }),
   );
 
-  await app.listen(process.env.PORT ?? 3000);
+  await app.listen(process.env.APP_PORT ?? 3000);
 }
 bootstrap();

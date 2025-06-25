@@ -1,5 +1,5 @@
 export class PaginationResponseDto<T> {
-  data: T[];
+  items: T[];
   total: number;
   page: number;
   limit: number;
