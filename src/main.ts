@@ -6,6 +6,7 @@ import { LoggingInterceptor } from './common/interceptors/logging.interceptor';
 import { ResponseTransformInterceptor } from './common/interceptors/response-transform.interceptor';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import { join } from 'path';
+import * as bodyParser from 'body-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -23,6 +24,9 @@ async function bootstrap() {
     },
     credentials: true,
   });
+
+  app.use(bodyParser.json({ limit: '10mb' })); // ✅ JSON body limit
+  app.use(bodyParser.urlencoded({ limit: '10mb', extended: true })); // ✅ Form body limit
 
   if (process.env.APP_ENV !== 'prod') {
     // Error handling
